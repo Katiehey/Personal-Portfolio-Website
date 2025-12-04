@@ -48,3 +48,6 @@ def list_messages():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+#Notes:
+#GET /messages returns JSON list of stored messages (useful while developing). On production you should protect it with auth or remove it.

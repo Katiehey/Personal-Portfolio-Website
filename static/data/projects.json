@@ -1,0 +1,14 @@
+[
+  {
+    "title": "House-price-prediction-app",
+    "desc": "Predict the house price by selecting the features available in the house — Python, pandas, matplotlib. Notebook + dashboard.",
+    "tech": ["Python", "Pandas", "Matplotlib", "Scikit-Learn", "XGBoost"],
+    "github": "https://github.com/Katiehey/House-price-prediction-app"
+  },
+  {
+    "title": "blog-web-app",
+    "desc": "Blog web app using Node, Express, EJS",
+    "tech": ["HTML", "JavaScript", "CSS", "Node.js", "Express", "EJS"],
+    "github": "https://github.com/Katiehey/blog-web-app"
+  }
+]
