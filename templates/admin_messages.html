@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+  <title>Admin Messages</title>
+</head>
+<body>
+  <h2>Messages</h2>
+  <table border="1" cellpadding="8">
+    <tr>
+      <th>Name</th><th>Email</th><th>Message</th><th>Date</th>
+    </tr>
+    {% for m in messages %}
+      <tr>
+        <td>{{ m['name'] }}</td>
+        <td>{{ m['email'] }}</td>
+        <td>{{ m['message'] }}</td>
+        <td>{{ m['created_at'] }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>
