@@ -14,9 +14,13 @@
   </style>
 </head>
 <body>
-  <nav class="nav">
-    <div class="nav-left"><a class="logo" href="{{ url_for('index') }}">Your Portfolio</a></div>
-    <div class="nav-right"><a class="nav-link" href="{{ url_for('index') }}">Home</a></div>
+  
+  <nav id="main-nav" class="nav">
+    <div class="nav-left"><a class="logo" href="{{ url_for('index') }}">Kutlwano Melamu</a></div>
+    <div class="nav-right">
+      <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+      <button id="theme-toggle" aria-label="Toggle theme">🌓</button>
+    </div>
   </nav>
 
   <main>
@@ -41,5 +45,9 @@
       </form>
     </div>
   </main>
+  <footer class="footer" style="margin-bottom: 0;padding-bottom: 0;">
+    <p>Made by Kutlwano Melamu • <a href="https://github.com/Katiehey" target="_blank">GitHub</a></p>
+  </footer>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

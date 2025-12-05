@@ -33,13 +33,19 @@ body{
   align-items:center;
   padding:12px 20px;
   backdrop-filter: blur(6px);
-  background:rgba(255,255,255,0.6);
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.75));
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  z-index: 1000;
 }
-[data-theme="dark"] .nav { background: rgba(7,18,38,0.6); }
-.nav .logo { font-weight:700; text-decoration:none; color:var(--fg) }
+[data-theme="dark"] .nav {
+  background: linear-gradient(180deg, rgba(8,15,28,0.85), rgba(8,15,28,0.65));
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.nav .logo { font-weight:700; text-decoration:none; color:var(--fg); font-size:1rem; }
 .nav-right { display:flex; gap:12px; align-items:center; }
-.nav-link { text-decoration:none; color:var(--muted); padding:6px; }
-.nav-link:hover{ color:var(--fg) }
+.nav-link { text-decoration:none; color:var(--muted); padding:8px 10px; border-radius:8px; transition: background 0.15s, color 0.15s; }
+.nav-link:hover{ color:var(--fg); background: rgba(0,0,0,0.04); }
+
 
 /* Sections */
 .section{ padding:80px 20px; max-width:1100px; margin:0 auto; }
@@ -114,7 +120,14 @@ section p {
 }
 /* CSS Ends Here */
 /* Footer */
-.footer{ padding:20px; text-align:center; color:var(--muted); border-top:1px solid rgba(0,0,0,0.04); }
+.footer{
+  padding:28px;
+  text-align:center;
+  color:var(--muted);
+  border-top: 1px solid rgba(0,0,0,0.04);
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.02));
+}
+.footer a { color: var(--accent); text-decoration: none; font-weight:600; }
 
 /* Responsive */
 @media (max-width:700px){
@@ -166,5 +179,6 @@ section p {
     background-color: #e0e0e0; /* Slightly darker gray on hover */
     transform: translateY(-2px); /* Slight lift effect */
 }
+
 
 
