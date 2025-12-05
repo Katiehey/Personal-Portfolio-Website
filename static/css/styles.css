@@ -122,3 +122,49 @@ section p {
   .hero h1{ font-size:1.8rem; }
 }
 
+/* Container for the buttons to help with alignment */
+.project-links {
+    margin-top: 15px; /* Adds space above the buttons */
+    display: flex;    /* Aligns buttons side-by-side */
+    gap: 10px;        /* Adds space between the buttons */
+    flex-wrap: wrap;  /* Allows buttons to wrap on smaller screens */
+}
+
+/* Base styles for both link buttons */
+.project-links a {
+    display: inline-block;
+    padding: 10px 15px;
+    text-decoration: none; /* Removes the default underline */
+    border-radius: 20px;   /* Softens the corners */
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Style for the "View Live App" button (Call to Action) */
+.live-app-button {
+    background-color: #007BFF; /* A primary blue color */
+    color: white;              /* White text */
+    border: 1px solid #0056b3;
+}
+
+.live-app-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* Style for the "View on GitHub" button (Secondary action) */
+/* Using a GitHub-like color or a neutral tone */
+.github-button {
+    background-color: #f0f0f0; /* Light gray background */
+    color: #333;               /* Dark text */
+    border: 1px solid #ccc;
+}
+
+.github-button:hover {
+    background-color: #e0e0e0; /* Slightly darker gray on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+

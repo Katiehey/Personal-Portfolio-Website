@@ -2,12 +2,15 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import secrets
 import requests
+import os
 import sqlite3
 from pathlib import Path
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 DB_PATH = Path("instance/contact_messages.db")
 app.secret_key = secrets.token_hex(16)
+# Get your PAT from an environment variable (as we discussed previously)
+GITHUB_TOKEN = os.environ.get('GITHUB_PAT') 
 
 def get_db_conn():
     conn = sqlite3.connect(DB_PATH)
@@ -74,6 +77,13 @@ def list_messages():
     messages = [dict(row) for row in rows]
     return jsonify(messages)
 
+# Get your PAT from an environment variable (as we discussed previously)
+GITHUB_TOKEN = os.environ.get('GITHUB_PAT') 
+
+if GITHUB_TOKEN is None:
+    # Handle the error if you don't set the token
+    raise ValueError("GitHub PAT not set.")
+
 @app.route("/github-projects")
 def github_projects():
     username = "Katiehey"
@@ -83,12 +93,26 @@ def github_projects():
     data = res.json()
 
     projects = []
+
+    # Add authentication headers to the request
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json" # Good practice to specify API version
+    }
+
+    res = requests.get(url, headers=headers)
+    res.raise_for_status() # This raises an exception if the request fails (e.g., if the token is bad)
+    data = res.json()
+
+
     for repo in data:
         projects.append({
             "title": repo["name"],
             "desc": repo["description"] or "No description",
             "tech": [],
-            "github": repo["html_url"]
+            "github": repo["html_url"],
+            # Add this line to capture the URL we added in Step 1
+            "live_url": repo["homepage"] or None # Use None if no homepage is set
         })
 
     return jsonify(projects)
