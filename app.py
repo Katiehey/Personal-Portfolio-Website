@@ -1,6 +1,7 @@
 # app.py
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import secrets
+import requests
 import sqlite3
 from pathlib import Path
 
@@ -72,6 +73,26 @@ def list_messages():
     conn.close()
     messages = [dict(row) for row in rows]
     return jsonify(messages)
+
+@app.route("/github-projects")
+def github_projects():
+    username = "Katiehey"
+
+    url = f"https://api.github.com/users/{username}/repos"
+    res = requests.get(url)
+    data = res.json()
+
+    projects = []
+    for repo in data:
+        projects.append({
+            "title": repo["name"],
+            "desc": repo["description"] or "No description",
+            "tech": [],
+            "github": repo["html_url"]
+        })
+
+    return jsonify(projects)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
