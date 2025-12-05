@@ -79,6 +79,40 @@ body{
 }
 .status{ margin-top:12px; color:var(--muted) }
 
+/* CSS Starts Here */
+.skills {
+  /* Use Flexbox for easy wrapping and alignment */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Space between the spans */
+  margin-top: 15px;
+  max-width: 600px; /* Optional: keeps skills contained on large screens */
+}
+.skills span {
+  /* Styling the individual tags/badges */
+  background-color: #e0e0e0; /* Light gray background */
+  color: #333; /* Dark gray text color */
+  padding: 8px 16px; /* Vertical and horizontal padding */
+  border-radius: 20px; /* Makes the edges rounded (pill shape) */
+  font-size: 0.9rem; /* Slightly smaller font size */
+  font-weight: 500; /* Medium font weight */
+  cursor: pointer; /* Changes cursor to a hand when hovering */
+  transition: background-color 0.3s, transform 0.2s; /* Smooth transitions for hover effects */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+}
+/* Optional: Add hover effects for interactivity */
+.skills span:hover {
+  background-color: #007BFF; /* A nice blue on hover */
+  color: white; /* White text on blue background */
+  transform: translateY(-2px); /* Lifts the badge slightly */
+}
+/* Basic paragraph styling for context */
+section p {
+    font-family: sans-serif;
+    line-height: 1.5;
+    color: #555;
+}
+/* CSS Ends Here */
 /* Footer */
 .footer{ padding:20px; text-align:center; color:var(--muted); border-top:1px solid rgba(0,0,0,0.04); }
 
@@ -87,3 +121,4 @@ body{
   .nav-right { gap:8px; }
   .hero h1{ font-size:1.8rem; }
 }
+

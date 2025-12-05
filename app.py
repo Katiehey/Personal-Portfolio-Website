@@ -1,10 +1,12 @@
 # app.py
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+import secrets
 import sqlite3
 from pathlib import Path
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 DB_PATH = Path("instance/contact_messages.db")
+app.secret_key = secrets.token_hex(16)
 
 def get_db_conn():
     conn = sqlite3.connect(DB_PATH)
@@ -14,6 +16,31 @@ def get_db_conn():
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/admin", methods=["GET", "POST"])
+def admin_login():
+    if request.method == "POST":
+        pwd = request.form.get("password", "")
+        from config import ADMIN_PASSWORD
+        if pwd == ADMIN_PASSWORD:
+            session["admin"] = True
+            return redirect(url_for("admin_messages"))
+        return render_template("admin_login.html", error="Wrong password")
+    return render_template("admin_login.html")
+
+@app.route("/admin/messages")
+def admin_messages():
+    if not session.get("admin"):
+        return redirect(url_for("admin_login"))
+
+    conn = get_db_conn()
+    c = conn.cursor()
+    c.execute("SELECT * FROM messages ORDER BY created_at DESC")
+    messages = c.fetchall()
+    conn.close()
+
+    return render_template("admin_messages.html", messages=messages)
+
 
 @app.route("/contact", methods=["POST"])
 def contact():
