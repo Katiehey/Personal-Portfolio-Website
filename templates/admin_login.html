@@ -1,15 +1,45 @@
+<!-- templates/admin_login.html -->
 <!doctype html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Admin Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <style>
+    .admin-card{ max-width:420px; margin:100px auto; padding:28px; border-radius:12px; background:var(--card); box-shadow:0 8px 30px rgba(2,6,23,0.08);}
+    .admin-card h2{ margin:0 0 12px; }
+    .field{ margin-bottom:12px; display:block; }
+    .flash { color: #b91c1c; margin-bottom:10px; }
+  </style>
 </head>
 <body>
-  <h2>Admin Login</h2>
-  {% if error %}<p style="color:red">{{ error }}</p>{% endif %}
-  <form method="POST">
-    <label>Password</label>
-    <input type="password" name="password" required />
-    <button type="submit">Login</button>
-  </form>
+  <nav class="nav">
+    <div class="nav-left"><a class="logo" href="{{ url_for('index') }}">Your Portfolio</a></div>
+    <div class="nav-right"><a class="nav-link" href="{{ url_for('index') }}">Home</a></div>
+  </nav>
+
+  <main>
+    <div class="admin-card">
+      <h2>Admin Login</h2>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for cat, msg in messages %}
+            <div class="flash">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <form method="POST">
+        <label class="field">
+          <div>Password</div>
+          <input type="password" name="password" required />
+        </label>
+        <div style="display:flex; gap:8px;">
+          <button class="btn" type="submit">Login</button>
+          <a class="btn" href="{{ url_for('index') }}" style="background:transparent;color:var(--muted);border:1px solid rgba(0,0,0,0.06)">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
 </body>
 </html>

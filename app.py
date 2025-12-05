@@ -1,10 +1,13 @@
 # app.py
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 import secrets
 import requests
 import os
 import sqlite3
 from pathlib import Path
+import math
+from config import ADMIN_PASSWORD  # keep your ADMIN_PASSWORD in config.py
+
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 DB_PATH = Path("instance/contact_messages.db")
@@ -25,26 +28,71 @@ def index():
 def admin_login():
     if request.method == "POST":
         pwd = request.form.get("password", "")
-        from config import ADMIN_PASSWORD
+        
         if pwd == ADMIN_PASSWORD:
             session["admin"] = True
             return redirect(url_for("admin_messages"))
+        flash("Wrong password", "error")
         return render_template("admin_login.html", error="Wrong password")
     return render_template("admin_login.html")
 
 @app.route("/admin/messages")
 def admin_messages():
-    if not session.get("admin"):
+    if not require_admin():
         return redirect(url_for("admin_login"))
+
+    # pagination params
+    try:
+        page = int(request.args.get("page", 1))
+    except ValueError:
+        page = 1
+    try:
+        per_page = int(request.args.get("per_page", 8))
+    except ValueError:
+        per_page = 8
 
     conn = get_db_conn()
     c = conn.cursor()
-    c.execute("SELECT * FROM messages ORDER BY created_at DESC")
-    messages = c.fetchall()
+    c.execute("SELECT COUNT(*) as cnt FROM messages")
+    total = c.fetchone()["cnt"]
+    total_pages = max(1, math.ceil(total / per_page))
+    offset = (page - 1) * per_page
+
+    c.execute("SELECT id, name, email, message, created_at FROM messages ORDER BY created_at DESC LIMIT ? OFFSET ?", (per_page, offset))
+    rows = c.fetchall()
     conn.close()
+    messages = [dict(row) for row in rows]
 
-    return render_template("admin_messages.html", messages=messages)
+    return render_template("admin_messages.html",
+                           messages=messages,
+                           page=page,
+                           per_page=per_page,
+                           total=total,
+                           total_pages=total_pages)
 
+# Delete message (POST only to avoid accidental GET deletes)
+@app.route("/admin/messages/delete/<int:msg_id>", methods=["POST"])
+def admin_delete_message(msg_id):
+    if not require_admin():
+        return redirect(url_for("admin_login"))
+    conn = get_db_conn()
+    c = conn.cursor()
+    c.execute("DELETE FROM messages WHERE id = ?", (msg_id,))
+    conn.commit()
+    conn.close()
+    flash("Message deleted", "info")
+    return redirect(url_for("admin_messages"))
+
+@app.route("/admin/logout")
+def admin_logout():
+    session.pop("admin", None)
+    flash("Logged out", "info")
+    return redirect(url_for("index"))
+
+def require_admin():
+    if not session.get("admin"):
+        return False
+    return True
 
 @app.route("/contact", methods=["POST"])
 def contact():
@@ -76,9 +124,6 @@ def list_messages():
     conn.close()
     messages = [dict(row) for row in rows]
     return jsonify(messages)
-
-# Get your PAT from an environment variable (as we discussed previously)
-GITHUB_TOKEN = os.environ.get('GITHUB_PAT') 
 
 if GITHUB_TOKEN is None:
     # Handle the error if you don't set the token

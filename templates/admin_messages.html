@@ -1,42 +1,80 @@
+<!-- templates/admin_messages.html -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin Messages</title>
+  <title>Admin — Messages</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <style>
+    .admin-wrap{ max-width:1100px; margin:40px auto; padding:20px; }
+    .admin-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+    .msg-table{ width:100%; border-collapse:collapse; }
+    .msg-table th, .msg-table td{ padding:12px; text-align:left; border-bottom:1px solid rgba(0,0,0,0.06); vertical-align:top; }
+    .msg-row { background: var(--card); border-radius:8px; margin-bottom:10px; padding:12px; }
+    .small-muted{ color:var(--muted); font-size:13px; }
+    .pagination{ display:flex; gap:8px; align-items:center; margin-top:18px; }
+    .page-btn { padding:6px 10px; border-radius:8px; border:1px solid rgba(0,0,0,0.06); background:transparent; cursor:pointer; }
+    .danger { background:#ef4444; color:white; border:none; }
+    .info { background:#10b981; color:white; border:none; }
+  </style>
 </head>
 <body>
-  <nav id="main-nav" class="nav">
-    <div class="nav-left">
-      <a href="#home" class="logo">Kutlwano Melamu</a>
-    </div>
-    <div class="nav-right">
-      <a href="#home" class="nav-link">Home</a>
-      <a href="#about" class="nav-link">About</a>
-      <a href="#projects" class="nav-link">Projects</a>
-      <a href="#contact" class="nav-link">Contact</a>
-      <button id="theme-toggle" aria-label="Toggle theme">🌓</button>
-    </div>
+  <nav class="nav">
+    <div class="nav-left"><a class="logo" href="{{ url_for('index') }}">Kutlwano Melamu</a></div>
+    <div class="nav-right"><a class="nav-link" href="{{ url_for('admin_logout') }}">Logout</a></div>
   </nav>
-<body>
-  <h2>Messages</h2>
-  <table border="1" cellpadding="8">
-    <tr>
-      <th>Name</th><th>Email</th><th>Message</th><th>Date</th>
-    </tr>
-    {% for m in messages %}
-      <tr>
-        <td>{{ m['name'] }}</td>
-        <td>{{ m['email'] }}</td>
-        <td>{{ m['message'] }}</td>
-        <td>{{ m['created_at'] }}</td>
-      </tr>
-    {% endfor %}
-  </table>
-  
-  <footer class="footer">
-    <p>Made by Kutlwano Melamu • <a href="https://github.com/Katiehey" target="_blank">GitHub</a></p>
-  </footer>
+
+  <div class="admin-wrap">
+    <div class="admin-top">
+      <h2>Messages ({{ total }})</h2>
+      <div>
+        <form method="GET" style="display:flex; gap:8px; align-items:center;">
+          <label class="small-muted">Per page:
+            <select name="per_page" onchange="this.form.submit()">
+              <option value="5" {% if per_page==5 %}selected{% endif %}>5</option>
+              <option value="8" {% if per_page==8 %}selected{% endif %}>8</option>
+              <option value="12" {% if per_page==12 %}selected{% endif %}>12</option>
+            </select>
+          </label>
+        </form>
+      </div>
+    </div>
+
+    {% if messages %}
+      <table class="msg-table" role="table">
+        <thead>
+          <tr><th>Name</th><th>Email</th><th>Message</th><th>Date</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for m in messages %}
+            <tr>
+              <td style="width:150px"><strong>{{ m['name'] }}</strong></td>
+              <td style="width:200px"><a href="mailto:{{ m['email'] }}">{{ m['email'] }}</a></td>
+              <td>{{ m['message'] }}</td>
+              <td style="width:150px"><div class="small-muted">{{ m['created_at'] }}</div></td>
+              <td style="width:120px">
+                <form method="POST" action="{{ url_for('admin_delete_message', msg_id=m['id']) }}" onsubmit="return confirm('Delete this message?');">
+                  <button class="page-btn danger" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No messages yet.</p>
+    {% endif %}
+
+    <div class="pagination" aria-label="Pagination">
+      {% if page > 1 %}
+        <a class="page-btn" href="{{ url_for('admin_messages') }}?page={{ page - 1 }}&per_page={{ per_page }}">← Prev</a>
+      {% endif %}
+      <div>Page {{ page }} of {{ total_pages }}</div>
+      {% if page < total_pages %}
+        <a class="page-btn" href="{{ url_for('admin_messages') }}?page={{ page + 1 }}&per_page={{ per_page }}">Next →</a>
+      {% endif %}
+    </div>
+  </div>
 </body>
 </html>
